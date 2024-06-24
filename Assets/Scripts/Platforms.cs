@@ -12,10 +12,12 @@ public class Platforms : MonoBehaviour
     private float mSlope = 0.0f;
     private int mPlatformCount;
     private Queue<GameObject> mPlatformQueue;
+    private Transform mCarTransform;
     private LevelManager mLevelManager;
 
     private void GeneratePlatform()
     {
+        mCarTransform = GameObject.Find("Car").transform;
         GameObject platformNext = Instantiate(mLevelManager.PlatformPrefab, transform);
         GameObject platformGround = platformNext.transform.GetChild(0).gameObject;
         platformNext.transform.position = mNextStart;
@@ -96,16 +98,28 @@ public class Platforms : MonoBehaviour
         platformStart.transform.localPosition = new Vector2(mWorldLeft, 0);
 
         {
-            SpriteShapeController spriteShapeController = platformStart.GetComponent<SpriteShapeController>();
-            Spline spline = spriteShapeController.spline;
+            GameObject platformGround = platformStart.transform.GetChild(0).gameObject;
+            SpriteShapeController platformSpriteShapeController = platformStart.GetComponent<SpriteShapeController>();
+            Spline platformSpline = platformSpriteShapeController.spline;
+            SpriteShapeController groundSpriteShapeController = platformGround.GetComponent<SpriteShapeController>();
+            Spline groundSpline = groundSpriteShapeController.spline;
             Vector2 startEndPoint = new Vector2(Globals.Platform.WIDTH, 0.0f);
 
-            spline.Clear();
+            platformSpline.Clear();
+            groundSpline.Clear();
 
-            spline.InsertPointAt(0, Vector2.zero);
-            spline.SetTangentMode(0, ShapeTangentMode.Continuous);
-            spline.InsertPointAt(1, startEndPoint);
-            spline.SetTangentMode(1, ShapeTangentMode.Continuous);
+            platformSpline.InsertPointAt(0, Vector2.zero);
+            platformSpline.SetTangentMode(0, ShapeTangentMode.Continuous);
+            platformSpline.InsertPointAt(1, startEndPoint);
+            platformSpline.SetTangentMode(1, ShapeTangentMode.Continuous);
+            groundSpline.InsertPointAt(0, Vector2.zero);
+            groundSpline.SetTangentMode(0, ShapeTangentMode.Linear);
+            groundSpline.InsertPointAt(1, startEndPoint);
+            groundSpline.SetTangentMode(1, ShapeTangentMode.Linear);
+            groundSpline.InsertPointAt(2, new Vector2(SEGMENT_SIZE, -3.0f * MAX_HILL_HEIGHT));
+            groundSpline.SetTangentMode(2, ShapeTangentMode.Linear);
+            groundSpline.InsertPointAt(3, new Vector2(0.0f, -3.0f * MAX_HILL_HEIGHT));
+            groundSpline.SetTangentMode(3, ShapeTangentMode.Linear);
             mPlatformQueue.Enqueue(platformStart);
         }
 
@@ -117,6 +131,8 @@ public class Platforms : MonoBehaviour
         {
             GeneratePlatform();
         }
+
+        mCarTransform.position = platformStart.transform.position + new Vector3(1.5f, 1.0f, 0.0f);
 
         LevelManager.SceneReady = true;
     }
