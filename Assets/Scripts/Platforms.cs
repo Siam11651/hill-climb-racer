@@ -13,6 +13,7 @@ public class Platforms : MonoBehaviour
     private int mPlatformCount;
     private Queue<GameObject> mPlatformQueue;
     private Transform mCarTransform;
+    [SerializeField]
     private LevelManager mLevelManager;
 
     private void GeneratePlatform()
@@ -90,7 +91,6 @@ public class Platforms : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mLevelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
         mPlatformQueue = new Queue<GameObject>();
         int pixelWidth = Camera.main.pixelWidth;
         mWorldLeft = -Camera.main.ScreenToWorldPoint(new Vector3(pixelWidth, 0, 0)).x;

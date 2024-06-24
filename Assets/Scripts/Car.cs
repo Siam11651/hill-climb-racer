@@ -3,11 +3,39 @@ using UnityEngine;
 public class Car : MonoBehaviour
 {
     private const float MOTOR_SPEED = 1000.0f;
-    private const float CAMERA_EASE = 0.5f;
+    private const float CAMERA_EASE = 0.75f;
     [SerializeField]
     private WheelJoint2D mRearWheelJoint;
-    public bool AccDown;
-    public bool RevDown;
+    [SerializeField]
+    private Rigidbody2D mCameraRb;
+    private bool mAccDown = false;
+    private bool mRevDown = false;
+
+    public bool AccDown
+    {
+        get
+        {
+            return mAccDown;
+        }
+
+        set
+        {
+            mAccDown = value;
+        }
+    }
+
+    public bool RevDown
+    {
+        get
+        {
+            return mRevDown;
+        }
+
+        set
+        {
+            mRevDown = value;
+        }
+    }
 
     public void Move(float input)
     {
@@ -48,10 +76,17 @@ public class Car : MonoBehaviour
         Vector2 displacement = transform.position - Camera.main.transform.position;
         float distance = displacement.magnitude;
 
-        if(LevelManager.SceneReady && distance > 0.1f)
-        {    
-            Vector2 direction = displacement.normalized;
-            Camera.main.transform.position += (Vector3)direction * distance * distance * CAMERA_EASE * Time.deltaTime;
+        if(LevelManager.SceneReady)
+        {
+            if(distance > 0.1f)
+            {
+                Vector2 direction = displacement.normalized;
+                mCameraRb.velocity = (Vector3)direction * distance * distance * CAMERA_EASE;
+            }
+            else
+            {
+                mCameraRb.velocity = Vector2.zero;
+            }
         }
         
         if(!LevelManager.PlatformQueueReady && distance < 1.0f)
