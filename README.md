@@ -3,5 +3,5 @@
 Trying to implement the game by myself.
 
 ## Goals:
-- Generate stage procedurally
+- Complete atleast one stage with one vehicle
 - Reinforced ML gameplay

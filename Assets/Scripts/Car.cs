@@ -6,23 +6,41 @@ public class Car : MonoBehaviour
     private const float CAMERA_EASE = 0.5f;
     [SerializeField]
     private WheelJoint2D mRearWheelJoint;
+    public bool AccDown;
+    public bool RevDown;
+
+    public void Move(float input)
+    {
+        JointMotor2D jointMotor = new JointMotor2D
+        {
+            motorSpeed = -input * MOTOR_SPEED,
+            maxMotorTorque = 10000
+        };
+
+        mRearWheelJoint.motor = jointMotor;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        JointMotor2D jointMotor = new JointMotor2D
+        if(AccDown && !RevDown)
         {
-            motorSpeed = -Input.GetAxis("Horizontal") * MOTOR_SPEED,
-            maxMotorTorque = 10000
-        };
-
-        mRearWheelJoint.motor = jointMotor;
+            Move(1.0f);
+        }
+        else if(!AccDown && RevDown)
+        {
+            Move(-1.0f);
+        }
+        else
+        {
+            Move(Input.GetAxis("Horizontal"));
+        }
     }
 
     void LateUpdate()

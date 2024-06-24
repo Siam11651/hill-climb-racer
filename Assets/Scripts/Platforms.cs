@@ -94,10 +94,13 @@ public class Platforms : MonoBehaviour
         mPlatformQueue = new Queue<GameObject>();
         int pixelWidth = Camera.main.pixelWidth;
         mWorldLeft = -Camera.main.ScreenToWorldPoint(new Vector3(pixelWidth, 0, 0)).x;
-        GameObject platformStart = Instantiate(mLevelManager.PlatformPrefab, transform);
-        platformStart.transform.localPosition = new Vector2(mWorldLeft, 0);
+        int platformRemains = (int)(-2.0f * mWorldLeft / Globals.Platform.WIDTH) + 1;
+        mNextStart = new Vector2(mWorldLeft, 0);
 
+        for(int i = 0; i < platformRemains; ++i)
         {
+            GameObject platformStart = Instantiate(mLevelManager.PlatformPrefab, transform);
+            platformStart.transform.localPosition = mNextStart;
             GameObject platformGround = platformStart.transform.GetChild(0).gameObject;
             SpriteShapeController platformSpriteShapeController = platformStart.GetComponent<SpriteShapeController>();
             Spline platformSpline = platformSpriteShapeController.spline;
@@ -121,19 +124,11 @@ public class Platforms : MonoBehaviour
             groundSpline.InsertPointAt(3, new Vector2(0.0f, -3.0f * MAX_HILL_HEIGHT));
             groundSpline.SetTangentMode(3, ShapeTangentMode.Linear);
             mPlatformQueue.Enqueue(platformStart);
+
+            mNextStart += new Vector2(Globals.Platform.WIDTH, 0.0f);
         }
 
-        int platformRemains = (int)(-2.0f * mWorldLeft / Globals.Platform.WIDTH) + 1;
         mPlatformCount = platformRemains + 2;
-        mNextStart = platformStart.transform.localPosition + new Vector3(Globals.Platform.WIDTH, 0.0f, 0.0f);
-
-        for(int i = 0; i < platformRemains; ++i)
-        {
-            GeneratePlatform();
-        }
-
-        mCarTransform.position = platformStart.transform.position + new Vector3(1.5f, 1.0f, 0.0f);
-
         LevelManager.SceneReady = true;
     }
 
