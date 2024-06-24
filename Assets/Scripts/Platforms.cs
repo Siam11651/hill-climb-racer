@@ -17,30 +17,67 @@ public class Platforms : MonoBehaviour
     private void GeneratePlatform()
     {
         GameObject platformNext = Instantiate(mLevelManager.PlatformPrefab, transform);
+        GameObject platformGround = platformNext.transform.GetChild(0).gameObject;
         platformNext.transform.position = mNextStart;
-        SpriteShapeController spriteShapeController = platformNext.GetComponent<SpriteShapeController>();
-        Spline spline = spriteShapeController.spline;
+        SpriteShapeController platformSpriteShapeController = platformNext.GetComponent<SpriteShapeController>();
+        Spline platformSpline = platformSpriteShapeController.spline;
+        SpriteShapeController groundSpriteShapeController = platformGround.GetComponent<SpriteShapeController>();
+        Spline groundSpline = groundSpriteShapeController.spline;
         Vector2 currentPoint = Vector2.zero;
 
-        spline.Clear();
+        platformSpline.Clear();
+        groundSpline.Clear();
 
         for(int j = 0; j < Globals.Platform.SEGMENT_COUNT; ++j)
         {
             Vector2 slopeVectorStart = new Vector2(SEGMENT_SIZE * MathF.Cos(MathF.Atan(mSlope)), SEGMENT_SIZE * MathF.Sin(MathF.Atan(mSlope))) * 0.5f;
-            spline.InsertPointAt(2 * j, currentPoint);
-            spline.SetTangentMode(2 * j, ShapeTangentMode.Continuous);
-            spline.SetRightTangent(2 * j, slopeVectorStart);
+            platformSpline.InsertPointAt(2 * j, currentPoint);
+            platformSpline.SetTangentMode(2 * j, ShapeTangentMode.Continuous);
+            platformSpline.SetRightTangent(2 * j, slopeVectorStart);
+            groundSpline.InsertPointAt(2 * j, currentPoint);
+
+            if(j == 0 || j == Globals.Platform.SEGMENT_COUNT - 1)
+            {
+                groundSpline.SetTangentMode(2 * j, ShapeTangentMode.Broken);
+            }
+            else
+            {
+                groundSpline.SetTangentMode(2 * j, ShapeTangentMode.Continuous);
+            }
+
+            groundSpline.SetRightTangent(2 * j, slopeVectorStart);
 
             float newY = -MAX_HILL_HEIGHT + 2.0f * (float)new System.Random().NextDouble() * MAX_HILL_HEIGHT;
             Vector2 newPoint = new Vector2(currentPoint.x + SEGMENT_SIZE, newY);
             mSlope = newY / SEGMENT_SIZE;
             Vector2 slopeVectorEnd = -new Vector2(SEGMENT_SIZE * MathF.Cos(MathF.Atan(mSlope)), SEGMENT_SIZE * MathF.Sin(MathF.Atan(mSlope))) * 0.5f;
 
-            spline.InsertPointAt(2 * j + 1, newPoint);
-            spline.SetTangentMode(2 * j + 1, ShapeTangentMode.Continuous);
-            spline.SetLeftTangent(2 * j + 1, slopeVectorEnd);
+            platformSpline.InsertPointAt(2 * j + 1, newPoint);
+            platformSpline.SetTangentMode(2 * j + 1, ShapeTangentMode.Continuous);
+            platformSpline.SetLeftTangent(2 * j + 1, slopeVectorEnd);
+            groundSpline.InsertPointAt(2 * j + 1, newPoint);
+
+            if(j == 0 || j == Globals.Platform.SEGMENT_COUNT - 1)
+            {
+                groundSpline.SetTangentMode(2 * j + 1, ShapeTangentMode.Broken);
+            }
+            else
+            {
+                groundSpline.SetTangentMode(2 * j + 1, ShapeTangentMode.Continuous);
+            }
+
+            groundSpline.SetLeftTangent(2 * j + 1, slopeVectorEnd);
 
             currentPoint = newPoint;
+        }
+
+        {
+            int index = 2 * Globals.Platform.SEGMENT_COUNT;
+
+            groundSpline.InsertPointAt(index, new Vector2(Globals.Platform.WIDTH, -3.0f * MAX_HILL_HEIGHT));
+            groundSpline.SetTangentMode(index, ShapeTangentMode.Linear);
+            groundSpline.InsertPointAt(index + 1, new Vector2(0.0f, -3.0f * MAX_HILL_HEIGHT));
+            groundSpline.SetTangentMode(index + 1, ShapeTangentMode.Linear);
         }
 
         mNextStart += currentPoint;
