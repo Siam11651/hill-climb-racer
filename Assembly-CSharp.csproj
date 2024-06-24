@@ -64,8 +64,10 @@
     <Analyzer Include="/home/siam11651/Unity/Hub/Editor/2022.3.34f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/Scripts/Dirt.cs" />
     <Compile Include="Assets/Scripts/Globals.cs" />
     <Compile Include="Assets/Scripts/Car.cs" />
+    <Compile Include="Assets/Scripts/Wheel.cs" />
     <Compile Include="Assets/Scripts/AccButton.cs" />
     <Compile Include="Assets/Scripts/LevelManager.cs" />
     <Compile Include="Assets/Scripts/RevButton.cs" />

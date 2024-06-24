@@ -5,8 +5,23 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
     public GameObject PlatformPrefab;
+    public GameObject DirtPrefab;
+    private float mLastDirtTime = -1.0f;
     private static bool sSceneReady = false;
     private static bool sPlatformQueueReady = false;
+
+    public float LastDirtTime
+    {
+        get
+        {
+            return mLastDirtTime;
+        }
+
+        set
+        {
+            mLastDirtTime = value;
+        }
+    }
 
     public static bool SceneReady
     {
