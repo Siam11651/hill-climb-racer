@@ -42,7 +42,7 @@ public class Car : MonoBehaviour
         JointMotor2D jointMotor = new JointMotor2D
         {
             motorSpeed = -input * MOTOR_SPEED,
-            maxMotorTorque = 10000
+            maxMotorTorque = 100f
         };
 
         mRearWheelJoint.motor = jointMotor;
