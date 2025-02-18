@@ -21,7 +21,7 @@ public class Dirt : MonoBehaviour
         }
 
         float y = System.MathF.Sqrt(1.0f - x * x);
-        mRb.velocity = new Vector2(x, y) * INIT_VELOCITY;
+        mRb.linearVelocity = new Vector2(x, y) * INIT_VELOCITY;
         mStartTime = Time.time;
     }
 

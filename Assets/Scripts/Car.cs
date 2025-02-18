@@ -81,11 +81,11 @@ public class Car : MonoBehaviour
             if(distance > 0.1f)
             {
                 Vector2 direction = displacement.normalized;
-                mCameraRb.velocity = (Vector3)direction * distance * distance * CAMERA_EASE;
+                mCameraRb.linearVelocity = (Vector3)direction * distance * distance * CAMERA_EASE;
             }
             else
             {
-                mCameraRb.velocity = Vector2.zero;
+                mCameraRb.linearVelocity = Vector2.zero;
             }
         }
         
